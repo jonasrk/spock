@@ -1,4 +1,4 @@
-from spock.net.client import Client
+from riker.rkclient import RikerClient
 from plugins import DebugPlugin, ReConnect, EchoPacket, Gravity, AntiAFK
 #from login import username, password
 
@@ -6,5 +6,5 @@ username = "ownspock"
 password = ""
 
 plugins = [DebugPlugin.DebugPlugin]
-client = Client(plugins = plugins, username = username, password = password)
+client = RikerClient()
 client.start()

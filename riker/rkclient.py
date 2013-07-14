@@ -2,7 +2,7 @@ import threading
 import spock.net.client
 from spock.net.cflags import cflags
 from spock.net.timer import ThreadedTimer
-from packet_queue import PacketQueue
+from riker.packet_queue import PacketQueue
 
 class RikerClient(spock.net.client.Client):
 	def __init__(self):
