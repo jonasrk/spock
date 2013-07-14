@@ -217,7 +217,9 @@ class Client(object):
 		else:
 			self.username = username
 
-		return LoginResponse
+		return {'Response': "Good to go!",
+				'Username': "ResponseBot",
+				'SessionID': "sessionid"}
 
 	def handshake(self):
 		self.SharedSecret = Random._UserFriendlyRNG.get_random_bytes(16)

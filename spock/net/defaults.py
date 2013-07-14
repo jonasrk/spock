@@ -6,7 +6,7 @@ defstruct = [
 	('daemon', False),
 	('logfile', ''),
 	('pidfile', ''),
-	('authenticated', True),
+	('authenticated', False),
 	('bufsize', 4096),
 	('timeout', -1),
 	('sock_quit', True),
