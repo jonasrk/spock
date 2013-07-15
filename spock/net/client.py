@@ -4,6 +4,7 @@ import signal
 import sys
 import os
 import logging
+import plugins.psicraft_dispatcher as psicraft
 
 from Crypto import Random
 
@@ -88,20 +89,17 @@ class Client(object):
 		self.exit()
 
 	def event_loop(self):
-		#check for new server commands
-		ip = 'localhost'
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.connect((ip, 50003))
-
-		antwort = s.recv(1024)
-		print("%s" % (antwort.decode()))
-		s.close()
 
 		#Set up signal handlers
 		signal.signal(signal.SIGINT, self.signal_handler)
 		signal.signal(signal.SIGTERM, self.signal_handler)
 		#Fire off plugins that need to run after init
 		for callback in self.plugin_handlers[cflags['START_EVENT']]: callback(flag)
+
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.bind(("", 50013))
+		s.listen(1)
+		read_list = [s]
 
 		while not (self.flags&cflags['KILL_EVENT'] and self.kill):
 			self.getflags()
@@ -120,6 +118,19 @@ class Client(object):
 			if self.daemon:
 				sys.stdout.flush()
 				sys.stderr.flush()
+			readable, writable, errored = select.select(read_list, [], [], 0.1)
+			for s in readable:
+				if s is s:
+
+					komm, addr = s.accept()
+					#while True:
+					data = komm.recv(1024)
+					#if not data:
+					#	komm.close()
+					#	break
+					print("bot server received:", data.decode())
+					psicraft.dispatch_psicraft_command(data, self)
+					komm.close()
 
 	def getflags(self):
 		self.flags = 0
