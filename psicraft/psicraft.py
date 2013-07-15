@@ -7,16 +7,15 @@ import datetime
 layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-s.bind(("", 50003))
-s.listen(1)
+
 
 @route('/connect')
 def connect_to_bot():
-	komm, addr = s.accept()
-	nachricht = "Give me your data!"
-  	komm.send(nachricht.encode())
-	komm.close()
+	ip = 'localhost'
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.connect((ip, 50013))
+	message = "x-"
+	s.send(message.encode())
 	s.close()
 
 
