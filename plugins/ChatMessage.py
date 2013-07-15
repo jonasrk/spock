@@ -11,3 +11,13 @@ class ChatMessagePlugin:
 			self.client.push(Packet(ident = 0x03, data = {
 						'text': "is this real life?"
 						}))
+
+		if packet.data['text'] == "<moejoe> do something!":
+			self.client.push(Packet(ident = 0x03, data = {
+						'text': "I'll try!"
+						}))
+			self.client.push(Packet(ident = 0x0C, data = {
+						'yaw': 75,
+						'pitch': 45,
+						'on_ground': False
+						}))
