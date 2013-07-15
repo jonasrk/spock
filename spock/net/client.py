@@ -39,6 +39,18 @@ class Client(object):
 		self.poll = select.poll()
 		self.poll.register(self.sock, smask)
 
+		#initialize socket to webinterface
+
+		ip = 'localhost'
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((ip, 50000))
+
+		nachricht = "psicraft? can you read me?"
+		s.send(nachricht.encode())
+		antwort = s.recv(1024)
+		print("[%s] %s" % (ip,antwort.decode()))
+		s.close()
+
 		#Initialize Event Loop/Network variables
 		#Plugins should generally not touch these
 		self.encrypted = False
