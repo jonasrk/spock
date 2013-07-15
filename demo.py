@@ -6,5 +6,5 @@ username = "ownspock"
 password = ""
 
 plugins = [DebugPlugin.DebugPlugin]
-client = RikerClient()
+client = RikerClient(plugins = plugins)
 client.start()

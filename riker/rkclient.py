@@ -5,8 +5,10 @@ from spock.net.timer import ThreadedTimer
 from riker.packet_queue import PacketQueue
 
 class RikerClient(spock.net.client.Client):
-	def __init__(self):
-		super(RikerClient, self).__init__()
+	def __init__(self, plugins):
+		self.plugins = plugins
+		#super(RikerClient, self, plugins = plugins).__init__()
+		spock.net.client.Client.__init__(self, plugins = plugins)
 		self.move_queue = PacketQueue()
 
 		self.stop_event = threading.Event()
