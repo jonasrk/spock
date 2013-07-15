@@ -1,5 +1,6 @@
 from spock.mcp.mcdata import structs
 from spock.mcp.mcpacket import Packet
+import socket
 
 class ChatMessagePlugin:
 	def __init__(self, client):
@@ -29,3 +30,12 @@ class ChatMessagePlugin:
 						'on_ground': False,
 						'stance': self.client.position['y'] + 0.11
 						}))
+			ip = 'localhost'
+			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			s.connect((ip, 50000))
+
+			nachricht = "psicraft? can you read me?"
+			s.send(nachricht.encode())
+			antwort = s.recv(1024)
+			print("[%s] %s" % (ip,antwort.decode()))
+			s.close()
