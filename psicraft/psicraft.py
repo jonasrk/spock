@@ -9,12 +9,12 @@ layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 
 
 
-@route('/connect')
-def connect_to_bot():
+@route('/connect/<command>')
+def connect_to_bot(command):
 	ip = 'localhost'
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((ip, 50013))
-	message = "x-"
+	s.connect((ip, 50014))
+	message = command
 	s.send(message.encode())
 	s.close()
 

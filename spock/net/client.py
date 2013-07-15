@@ -97,7 +97,7 @@ class Client(object):
 		for callback in self.plugin_handlers[cflags['START_EVENT']]: callback(flag)
 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.bind(("", 50013))
+		s.bind(("", 50014))
 		s.listen(1)
 		read_list = [s]
 

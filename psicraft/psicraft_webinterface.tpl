@@ -6,10 +6,10 @@
     </head
     <body>
         
-        <button onclick="send_command(&quot;http://localhost:8080/button/xp&quot;)">x+</button>
-        <button onclick="send_command(&quot;http://localhost:8080/button/xm&quot;)">x-</button>
-        <button onclick="send_command(&quot;http://localhost:8080/button/zp&quot;)">z+</button>
-        <button onclick="send_command(&quot;http://localhost:8080/button/zm&quot;)">z-</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/x+&quot;)">x+</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/x-&quot;)">x-</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/z+&quot;)">z+</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/z-&quot;)">z-</button>
         <button onclick="send_command(&quot;http://localhost:8080/button/pxp&quot;)">peek@x+</button>
         <button onclick="send_command(&quot;http://localhost:8080/button/pxm&quot;)">peek@x-</button>
         <button onclick="query_and_draw()">draw chunk</button>
@@ -17,7 +17,7 @@
         <button onclick="stop_redraw_vis()">stop drawing chunk continuously</button>
         <button onclick="more_layers()">more layers</button>
         <button onclick="fewer_layers()">fewer layers</button>
-        <button onclick="send_command(&quot;http://localhost:8080/connect&quot;)">connect to bot</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/x+&quot;)">connect to bot</button>
         
         <div id="layer_div">16 layers</div>
         
