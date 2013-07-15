@@ -13,6 +13,7 @@ class ChatMessagePlugin:
 						}))
 
 		if packet.data['text'] == "<moejoe> do something!":
+			print("x : ", self.client.position['x'])
 			self.client.push(Packet(ident = 0x03, data = {
 						'text': "I'll try!"
 						}))
@@ -20,4 +21,11 @@ class ChatMessagePlugin:
 						'yaw': 75,
 						'pitch': 45,
 						'on_ground': False
+						}))
+			self.client.push(Packet(ident = 0x0B, data = {
+						'x': self.client.position['x'] + 1,
+						'y': self.client.position['y'],
+						'z': self.client.position['z'],
+						'on_ground': False,
+						'stance': self.client.position['y'] + 0.11
 						}))
