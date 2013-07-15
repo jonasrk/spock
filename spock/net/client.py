@@ -88,6 +88,15 @@ class Client(object):
 		self.exit()
 
 	def event_loop(self):
+		#check for new server commands
+		ip = 'localhost'
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((ip, 50003))
+
+		antwort = s.recv(1024)
+		print("%s" % (antwort.decode()))
+		s.close()
+
 		#Set up signal handlers
 		signal.signal(signal.SIGINT, self.signal_handler)
 		signal.signal(signal.SIGTERM, self.signal_handler)

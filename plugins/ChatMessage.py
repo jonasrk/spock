@@ -14,7 +14,6 @@ class ChatMessagePlugin:
 						}))
 
 		if packet.data['text'] == "<moejoe> do something!":
-			print("x : ", self.client.position['x'])
 			self.client.push(Packet(ident = 0x03, data = {
 						'text': "I'll try!"
 						}))
@@ -32,9 +31,9 @@ class ChatMessagePlugin:
 						}))
 			ip = 'localhost'
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			s.connect((ip, 50000))
+			s.connect((ip, 50003))
 
-			nachricht = "psicraft? can you read me?"
+			nachricht =  "x: %s y: %s z: %s" % (self.client.position['x'], self.client.position['y'], self.client.position['z'])
 			s.send(nachricht.encode())
 			antwort = s.recv(1024)
 			print("[%s] %s" % (ip,antwort.decode()))
