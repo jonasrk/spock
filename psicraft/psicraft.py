@@ -8,16 +8,16 @@ layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-s.bind(("", 50000)) 
+s.bind(("", 50003))
 s.listen(1)
 
 @route('/connect')
 def connect_to_bot():
 	komm, addr = s.accept()
-	data = komm.recv(1024)
-	print("[%s] %s" % (addr[0], data.decode()))
-  	nachricht = "Hello SpockBot! Affirmative, i can read you!"
+	nachricht = "Give me your data!"
   	komm.send(nachricht.encode())
+	komm.close()
+	s.close()
 
 
 @route('/bot')
