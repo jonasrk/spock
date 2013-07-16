@@ -9,11 +9,42 @@ layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 
 
 
+@route('/query_chunk')
+def query_chunk():
+	ip = 'localhost'
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.connect((ip, 50050))
+	message = "query_chunk"
+	s.send(message.encode())
+	data = ""
+	while True:
+		data1 = s.recv(4)
+
+		if not data1:
+			s.close()
+			break
+		data += data1.decode()
+
+	chunk = json.loads(data)
+
+	web_chunk = [[[[0, 0] for i in range(16)] for j in range(256)] for k in range(16)]
+
+	for x in range(16):
+		for y in range(256):
+			for z in range(16):
+				web_chunk[x][y][z] = chunk[x][y][z]
+
+
+	print("got it! block_type 8 28 8 is: %s" % chunk[8][200][8])
+	s.close()
+
+	return json.dumps([web_chunk, 1, layers])
+
 @route('/connect/<command>')
 def connect_to_bot(command):
 	ip = 'localhost'
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((ip, 50014))
+	s.connect((ip, 50042))
 	message = command
 	s.send(message.encode())
 	s.close()
@@ -35,39 +66,39 @@ def button(command):
     return "Bot <'{0}'> : '{1}'".format(format_time, bots_answer)
 
 
-@route('/query_chunk')
-def query_chunk():
-    tel = telnetlib.Telnet("localhost", 9393)
-    tel.write("q9bl\r\n")
-    text = tel.read_until("\r\n\r") #command does currently not get displayed for queries
-
-    bot_block = json.loads(tel.read_until("\r\n\r").strip())
-
-    chunk_list = list()
-    for i in range(0, 128):
-        next_chunk_part = tel.read_until("\r\n\r")
-        next_chunk_part = next_chunk_part.strip()
-        chunk_list.extend(json.loads(next_chunk_part))
-
-    tel.close()
-
-    chunk = [[[[0, 0] for i in range(16)] for j in range(256)] for k in range(16)]
-
-    for x in range(16):
-        for y in range(256):
-            for z in range(16):
-                chunk[x][y][z] = chunk_list[y * 16 * 16 + z * 16 + x]
-
-    bot_height = bot_block[1]
-
-    web_chunk = [[[[0, 0] for i in range(16)] for j in range(layers)] for k in range(16)]
-
-    for x in range(16):
-        for y in range(layers):
-            for z in range(16):
-                web_chunk[x][y][z] = chunk[x][bot_height - ((layers - 1) / 2) + y][z]
-
-    return json.dumps([web_chunk, bot_block, layers])
+#@route('/query_chunk')
+#def query_chunk():
+#    tel = telnetlib.Telnet("localhost", 9393)
+#    tel.write("q9bl\r\n")
+#    text = tel.read_until("\r\n\r") #command does currently not get displayed for queries
+#
+#    bot_block = json.loads(tel.read_until("\r\n\r").strip())
+#
+#    chunk_list = list()
+#    for i in range(0, 128):
+#        next_chunk_part = tel.read_until("\r\n\r")
+#        next_chunk_part = next_chunk_part.strip()
+#        chunk_list.extend(json.loads(next_chunk_part))
+#
+#    tel.close()
+#
+#    chunk = [[[[0, 0] for i in range(16)] for j in range(256)] for k in range(16)]
+#
+#    for x in range(16):
+#        for y in range(256):
+#            for z in range(16):
+#                chunk[x][y][z] = chunk_list[y * 16 * 16 + z * 16 + x]
+#
+#    bot_height = bot_block[1]
+#
+#    web_chunk = [[[[0, 0] for i in range(16)] for j in range(layers)] for k in range(16)]
+#
+#    for x in range(16):
+#        for y in range(layers):
+#            for z in range(16):
+#                web_chunk[x][y][z] = chunk[x][bot_height - ((layers - 1) / 2) + y][z]
+#
+#    return json.dumps([web_chunk, bot_block, layers])
 
 @route('/query_bot')
 def query_bot():
