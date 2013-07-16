@@ -13,7 +13,7 @@ layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 def query_chunk():
 	ip = 'localhost'
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((ip, 50050))
+	s.connect((ip, 50051))
 	message = "query_chunk"
 	s.send(message.encode())
 	data = ""
@@ -25,26 +25,33 @@ def query_chunk():
 			break
 		data += data1.decode()
 
-	chunk = json.loads(data)
 
-	web_chunk = [[[[0, 0] for i in range(16)] for j in range(256)] for k in range(16)]
+	bot_and_chunk = json.loads(data)
+
+	bot_block = bot_and_chunk[0]
+
+	chunk = bot_and_chunk[1]
+
+	bot_height = bot_block[1]
+
+	web_chunk = [[[[0, 0] for i in range(16)] for j in range(layers)] for k in range(16)]
 
 	for x in range(16):
-		for y in range(256):
+		for y in range(layers):
 			for z in range(16):
-				web_chunk[x][y][z] = chunk[x][y][z]
+				web_chunk[x][y][z] = chunk[x][int(bot_height - ((layers - 1) // 2) + y)][z]
 
 
 	print("got it! block_type 8 28 8 is: %s" % chunk[8][200][8])
 	s.close()
 
-	return json.dumps([web_chunk, 1, layers])
+	return json.dumps([web_chunk, bot_block, layers])
 
 @route('/connect/<command>')
 def connect_to_bot(command):
 	ip = 'localhost'
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((ip, 50042))
+	s.connect((ip, 50051))
 	message = command
 	s.send(message.encode())
 	s.close()
