@@ -29,12 +29,16 @@ class ChatMessagePlugin:
 						'on_ground': False,
 						'stance': self.client.position['y'] + 0.11
 						}))
-			ip = 'localhost'
-			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			s.connect((ip, 50003))
 
-			nachricht =  "x: %s y: %s z: %s" % (self.client.position['x'], self.client.position['y'], self.client.position['z'])
-			s.send(nachricht.encode())
-			antwort = s.recv(1024)
-			print("[%s] %s" % (ip,antwort.decode()))
-			s.close()
+			#for i in range (0,265):
+			#	for j in range (1,265):
+			#		print("i: %s j: %s chunk_data: %s" % (i, j, self.client.world.get(self.client.position['x'],j,self.client.position['z'], j)))
+
+			#x_chunk = self.client.position['x'] // 16
+			#z_chunk = self.client.position['z'] // 16
+			#for i in range (0,16):
+			#	for x in range (0,16):
+			#		for y in range (0,16):
+			#			for z in range (0,16):
+			#				print(self.client.world.columns[(x_chunk, z_chunk)].chunks[i]['block_data'].get(x,y,z))
+

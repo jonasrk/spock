@@ -21,7 +21,7 @@ class Packet(object):
 		#Payload
 		for dtype, name in mcdata.structs[self.ident][self.direction]:
 			self.data[name] = datautils.unpack(bbuff, dtype)
-		
+
 		#Extension
 		if self.ident in mcpacket_extensions.extensions:
 			mcpacket_extensions.extensions[self.ident].decode_extra(self, bbuff)

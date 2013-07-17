@@ -15,8 +15,11 @@ from spock.net import timer, cipher, defaults
 from spock.mcp import mcdata, mcpacket
 from spock import utils, smpmap, bound_buffer
 
+
 rmask = select.POLLIN|select.POLLERR|select.POLLHUP
 smask = select.POLLOUT|select.POLLIN|select.POLLERR|select.POLLHUP
+
+
 
 class Client(object):
 	def __init__(self, **kwargs):
@@ -39,6 +42,9 @@ class Client(object):
 		self.sock.setblocking(0)
 		self.poll = select.poll()
 		self.poll.register(self.sock, smask)
+
+		#Initialize socket for communication with webinterface
+		self.websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 		#Initialize Event Loop/Network variables
 		#Plugins should generally not touch these
@@ -88,6 +94,10 @@ class Client(object):
 			self.event_loop()
 		self.exit()
 
+		def customKeyboardInterruptHandler(signum, stackframe):
+			log.msg("CTRL-C from user, exiting....")
+			self.websock.close()
+
 	def event_loop(self):
 
 		#Set up signal handlers
@@ -96,10 +106,11 @@ class Client(object):
 		#Fire off plugins that need to run after init
 		for callback in self.plugin_handlers[cflags['START_EVENT']]: callback(flag)
 
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.bind(("", 50014))
-		s.listen(1)
-		read_list = [s]
+		#starting webinterface socket
+		self.websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.websock.bind(("", 50051))
+		self.websock.listen(1)
+		read_list = [self.websock]
 
 		while not (self.flags&cflags['KILL_EVENT'] and self.kill):
 			self.getflags()
@@ -118,18 +129,13 @@ class Client(object):
 			if self.daemon:
 				sys.stdout.flush()
 				sys.stderr.flush()
-			readable, writable, errored = select.select(read_list, [], [], 0.1)
+			#waiting for new commands from webinterface. 0.01s timeout
+			readable, writable, errored = select.select(read_list, [], [], 0.01)
 			for s in readable:
 				if s is s:
-
 					komm, addr = s.accept()
-					#while True:
 					data = komm.recv(1024)
-					#if not data:
-					#	komm.close()
-					#	break
-					print("bot server received:", data.decode())
-					psicraft.dispatch_psicraft_command(data, self)
+					psicraft.dispatch_psicraft_command(data, self, komm)
 					komm.close()
 
 	def getflags(self):

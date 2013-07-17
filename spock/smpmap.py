@@ -144,6 +144,7 @@ class ChunkColumn:
 				if self.chunks[i] == None:
 					self.chunks[i] = Chunk()
 				self.chunks[i][section].unpack(buff)
+				#print("self.chunks[%s][%s]: %s" % (i, section, self.chunks[i][section]))
 
 class World:
 	""" A bunch of ChunkColumns. """
@@ -177,6 +178,7 @@ class World:
 			self.columns[key].unpack(data, mask1, mask2, skylight, ground_up)
 
 	def unpack_column(self, packet):
+		print("Unpacking column")
 		x_chunk = packet.data['x_chunk']
 		z_chunk = packet.data['z_chunk']
 		ground_up = packet.data['ground_up_continuous']
@@ -207,6 +209,7 @@ class World:
 		return chunk[key].get(rx,ry,rz)
 	
 	def put(self, x, y, z, key, data):
+		print("putting data - x: %s y: %s z: %s key: %s data: %s" % (x, y, z, key, data))
 		x, rx = divmod(x, 16)
 		y, ry = divmod(y, 16)
 		z, rz = divmod(z, 16)

@@ -16,6 +16,7 @@ data_types = {
 	"long": ('q', 8),
 	"float": ('f', 4),
 	"double": ('d', 8),
+	"data": ("self.data[data_size]")
 }
 
 blocks = {
@@ -509,7 +510,8 @@ structs = {
 		("bool", "ground_up_continuous"),
 		("ushort", "primary_bitmap"),
 		("ushort", "secondary_bitmap"),
-		("int", "data_size")),
+		("int", "data_size"),
+		("data", "data")),
 	#Multi Block Change
 	0x34: (
 		("int", "x_chunk"),
@@ -543,6 +545,9 @@ structs = {
 		("short", "chunk_column_count"),
 		("int", "data_size"),
 		("bool", "sky_light")),
+		#("data", "data")),
+		#("data", "meta")),
+
 	#Explosion
 	0x3C: (
 		("double", "x"),
