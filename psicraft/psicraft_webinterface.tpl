@@ -12,7 +12,7 @@
         <button onclick="send_command(&quot;http://localhost:8080/connect/z-&quot;)">z-</button>
         <button onclick="send_command(&quot;http://localhost:8080/button/pxp&quot;)">peek@x+</button>
         <button onclick="send_command(&quot;http://localhost:8080/button/pxm&quot;)">peek@x-</button>
-        <button onclick="query_and_draw_chunk()">draw chunk</button>
+        <button onclick="query_and_draw()">draw chunk</button>
         <button onclick="redraw_vis()">draw chunk continuously</button>
         <button onclick="stop_redraw_vis()">stop drawing chunk continuously</button>
         <button onclick="more_layers()">more layers</button>

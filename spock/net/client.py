@@ -19,6 +19,8 @@ from spock import utils, smpmap, bound_buffer
 rmask = select.POLLIN|select.POLLERR|select.POLLHUP
 smask = select.POLLOUT|select.POLLIN|select.POLLERR|select.POLLHUP
 
+webinterface_port = 50053
+
 
 
 class Client(object):
@@ -108,7 +110,7 @@ class Client(object):
 
 		#starting webinterface socket
 		self.websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.websock.bind(("", 50051))
+		self.websock.bind(("", webinterface_port))
 		self.websock.listen(1)
 		read_list = [self.websock]
 

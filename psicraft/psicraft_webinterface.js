@@ -110,8 +110,8 @@ function query_and_draw_bot() {
 
             var img = new Image();
 
-            var x_coord = 18 * (bot_block[0] % 16 + bot_block[2] % 16);
-            var y_coord = canvas_offset + 9 * (bot_block[2] % 16 - bot_block[0] % 16) - ((((layers - 1) / 2) + 2) * 20);
+            var x_coord = 18 * (15 + bot_block[0] % 16 + bot_block[2] % 16);
+            var y_coord = canvas_offset + 9 * (-15 + bot_block[2] % 16 - bot_block[0] % 16) - ((((layers - 1) / 2) + 2) * 20);
             img.src = "/static/block_images/bot.png";
             context.drawImage(img, x_coord, y_coord, 40, 80);
 
