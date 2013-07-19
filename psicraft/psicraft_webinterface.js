@@ -1,3 +1,17 @@
+var clearCanvas = false;
+
+window.onload = function () {
+    var papercanvas = document.getElementById('myCanvas'); // for paper.js
+    paper.setup(papercanvas);
+};
+
+function onFrame(event){
+    if(clearCanvas && project.activeLayer.hasChildren()){
+        project.activeLayer.removeChildren();
+        clearCanvas = false;
+    }
+}
+
 function send_command(path) {
 
     var request = new XMLHttpRequest();
@@ -6,7 +20,7 @@ function send_command(path) {
 
         if ((request.readyState === 4) && (request.status === 200)) {
             var modify = document.getElementById('log_area');
-            modify.innerHTML = request.responseText + "<br>" +  modify.innerHTML;
+            modify.innerHTML = request.responseText + "<br>" + modify.innerHTML;
         }
 
     };
@@ -18,11 +32,11 @@ function redraw_vis() {
 
     redraw_chunk_interval = setInterval(function () {
         query_and_draw_chunk()
-    }, 500);
+    }, 1000);
 
-        redraw_bot_interval = setInterval(function () {
+    redraw_bot_interval = setInterval(function () {
         query_and_draw_bot()
-    }, 500);
+    }, 1000);
 
 }
 
@@ -33,7 +47,7 @@ function stop_redraw_vis() {
 
 }
 
-function query_and_draw(){
+function query_and_draw() {
 
     query_and_draw_chunk();
     query_and_draw_bot();
@@ -42,10 +56,7 @@ function query_and_draw(){
 
 function query_and_draw_chunk() {
 
-    var canvas = document.getElementById('ChunkCanvas');
-    var context = canvas.getContext('2d');
-
-    canvas.width = canvas.width; //clear canvas
+    clearCanvas = true;
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_chunk", true);
@@ -59,7 +70,6 @@ function query_and_draw_chunk() {
             var layers = blocks_and_botblock_and_layers[2];
             var canvas_offset = 20 * 16;
 
-            var img = new Image();
 
             for (var layer = 0; layer < layers; layer++) {
 
@@ -72,30 +82,40 @@ function query_and_draw_chunk() {
                         var x_coord = 18 * (cols + rows);
                         var y_coord = canvas_offset + 9 * (rows - cols) - (layer * 20);
 
-                        if (block_name != "0"){
-                           if (layer == layers - 1 || rows == 15 || cols == 0){
+                        if (block_name != "0") {
+                            if (layer == layers - 1 || rows == 15 || cols == 0) {
 
 
-                            img.src = "/static/block_images/" + block_name + ".png";
-                            context.drawImage(img, x_coord, y_coord, 40, 40);
+                                var url = "/static/block_images/" + block_name + ".png";
+                                var raster = new paper.Raster(url);
+                                raster.position = new paper.Point(x_coord, y_coord);
+                                raster.scale(0.27);
 
-                           } else if (blocks_json[cols-1][layer][rows] == "0" ||
-                                    blocks_json[cols][layer+1][rows] == "0" ||
-                                        blocks_json[cols][layer][rows+1] == "0"){
+                                //paper.view.draw();
 
-                            img.src = "/static/block_images/" + block_name + ".png";
-                            context.drawImage(img, x_coord, y_coord, 40, 40);
+                            } else if (blocks_json[cols - 1][layer][rows] == "0" ||
+                                blocks_json[cols][layer + 1][rows] == "0" ||
+                                blocks_json[cols][layer][rows + 1] == "0") {
 
-                                }
+                                var url = "/static/block_images/" + block_name + ".png";
+                                var raster = new paper.Raster(url);
+                                raster.position = new paper.Point(x_coord, y_coord);
+                                raster.scale(0.27);
 
+                                //paper.view.draw();
 
                             }
+
+
+                        }
 
                     }
 
                 }
 
             }
+
+            paper.view.draw();
 
         }
 
@@ -105,10 +125,6 @@ function query_and_draw_chunk() {
 
 function query_and_draw_bot() {
 
-    var canvas = document.getElementById('BotCanvas');
-    var context = canvas.getContext('2d');
-
-    canvas.width = canvas.width; //clear canvas
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_bot", true);
@@ -125,8 +141,13 @@ function query_and_draw_bot() {
 
             var x_coord = 18 * (15 + bot_block[0] % 16 + bot_block[2] % 16);
             var y_coord = canvas_offset + 9 * (-15 + bot_block[2] % 16 - bot_block[0] % 16) - ((((layers - 1) / 2) + 2) * 20);
-            img.src = "/static/block_images/bot.png";
-            context.drawImage(img, x_coord, y_coord, 40, 80);
+
+            var url = "/static/block_images/bot.png";
+            var raster = new paper.Raster(url);
+            raster.position = new paper.Point(x_coord, y_coord);
+            raster.scale(0.1);
+
+            paper.view.draw();
 
         }
 
