@@ -18,7 +18,7 @@ function redraw_vis() {
 
     redraw_chunk_interval = setInterval(function () {
         query_and_draw_chunk()
-    }, 5000);
+    }, 500);
 
         redraw_bot_interval = setInterval(function () {
         query_and_draw_bot()
@@ -72,11 +72,24 @@ function query_and_draw_chunk() {
                         var x_coord = 18 * (cols + rows);
                         var y_coord = canvas_offset + 9 * (rows - cols) - (layer * 20);
 
-                        if (block_name != "0") {
+                        if (block_name != "0"){
+                           if (layer == layers - 1 || rows == 15 || cols == 0){
+
 
                             img.src = "/static/block_images/" + block_name + ".png";
                             context.drawImage(img, x_coord, y_coord, 40, 40);
-                        }
+
+                           } else if (blocks_json[cols-1][layer][rows] == "0" ||
+                                    blocks_json[cols][layer+1][rows] == "0" ||
+                                        blocks_json[cols][layer][rows+1] == "0"){
+
+                            img.src = "/static/block_images/" + block_name + ".png";
+                            context.drawImage(img, x_coord, y_coord, 40, 40);
+
+                                }
+
+
+                            }
 
                     }
 

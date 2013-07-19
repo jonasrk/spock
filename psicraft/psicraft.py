@@ -6,7 +6,7 @@ import datetime
 
 layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 bot_ip = 'localhost'
-bot_port = 50054
+bot_port = 50066
 
 
 @route('/query_chunk')
