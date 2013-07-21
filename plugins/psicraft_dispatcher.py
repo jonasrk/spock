@@ -1,7 +1,7 @@
 __author__ = 'jonas'
 from spock.mcp.mcpacket import Packet
 import json
-
+layers = 2
 
 def dispatch_psicraft_command(antwort, client, komm):
 	if antwort == "x-":
@@ -16,6 +16,14 @@ def dispatch_psicraft_command(antwort, client, komm):
 		psicraft_query_chunk(client, komm)
 	elif antwort == "query_bot":
 		psicraft_query_bot(client, komm)
+	elif antwort == "more_layers":
+		global layers
+		layers = layers + 1
+		komm.send(json.dumps("Bot now sends %s layers to webinterface" % layers).encode())
+	elif antwort == "fewer_layers":
+		global layers
+		layers = layers - 1
+		komm.send(json.dumps("Bot now sends %s layers to webinterface" % layers).encode())
 	elif antwort == "kill":
 		psicraft_kill(client)
 
@@ -73,16 +81,15 @@ def psicraft_query_chunk(client, komm):
 	x_chunk = client.position['x'] // 16
 	z_chunk = client.position['z'] // 16
 
-	block_types_json = [[[0 for i in range(16)] for i in range(256)] for j in range(16)]
-
-	for i in range (0,16):
-			for x in range (0,16):
-				for y in range (0,16):
-					for z in range (0,16):
-						if client.world.columns[(x_chunk, z_chunk)].chunks[i] != None:
-							block_types_json[x][y+(16*i)][z] = client.world.columns[(x_chunk, z_chunk)].chunks[i]['block_data'].get(x,y,z)
+	block_types_json = [[[0 for i in range(16)] for i in range(layers)] for j in range(16)]
 
 	bot_block = [client.position['x'], client.position['y'], client.position['z']]
+
+	for y in range (0,layers):
+		for x in range (0,16):
+			for z in range (0,16):
+				if client.world.columns[(x_chunk, z_chunk)].chunks[int((bot_block[1]+y)//16)] != None:
+					block_types_json[x][y][z] = client.world.columns[(x_chunk, z_chunk)].chunks[int((bot_block[1]+y-layers//2)//16)]['block_data'].get(x,int((bot_block[1]+y-layers//2)%16),z)
 
 	komm.send(json.dumps([bot_block, block_types_json, "Received chunk from Bot"]).encode())
 

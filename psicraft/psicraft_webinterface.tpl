@@ -22,7 +22,7 @@
         <button onclick="fewer_layers()">fewer layers</button>
         <button onclick="send_command(&quot;http://localhost:8080/connect/kill&quot;)">kill bot</button>
         
-        <div id="layer_div">16 layers</div>
+        <div id="layer_div">2 layers</div>
         
         <p><textarea id="log_area" cols="70"></textarea></p>
         

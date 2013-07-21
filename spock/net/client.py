@@ -19,7 +19,7 @@ from spock import utils, smpmap, bound_buffer
 rmask = select.POLLIN|select.POLLERR|select.POLLHUP
 smask = select.POLLOUT|select.POLLIN|select.POLLERR|select.POLLHUP
 
-webinterface_port = 50092
+webinterface_port = 50104
 
 #Initialize socket for communication with webinterface
 websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

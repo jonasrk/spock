@@ -1,5 +1,8 @@
 var clearCanvas = false;
 
+var loaded_blocks = new Array();
+var loaded_blocks_symbols = new Array();
+
 window.onload = function () {
     var papercanvas = document.getElementById('myCanvas'); // for paper.js
     paper.setup(papercanvas);
@@ -58,9 +61,6 @@ function query_and_draw_chunk() {
 
     clearCanvas = true;
 
-    var loaded_blocks = new Array();
-    var loaded_blocks_symbols = new Array();
-
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_chunk", true);
     request.onreadystatechange = function () {
@@ -85,6 +85,7 @@ function query_and_draw_chunk() {
 
                     for (var cols = 15; cols >= 0; cols--) {
 
+
                         var block_name = blocks_json[cols][layer][rows];
 
                         var block_loaded = false;
@@ -93,6 +94,8 @@ function query_and_draw_chunk() {
                         var y_coord = canvas_offset + 9 * (rows - cols) - (layer * 20);
 
                         if (block_name != "0") {
+
+
                             if (layer == layers - 1 || rows == 15 || cols == 0) {
 
 
@@ -227,6 +230,7 @@ function query_and_draw_bot() {
 
 function more_layers() {
 
+    send_command("http://localhost:8080/connect/more_layers");
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/more_layers", true);
     request.onreadystatechange = function () {
@@ -245,6 +249,7 @@ function more_layers() {
 
 function fewer_layers() {
 
+    send_command("http://localhost:8080/connect/fewer_layers");
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/fewer_layers", true);
     request.onreadystatechange = function () {
