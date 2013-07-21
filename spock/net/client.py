@@ -19,7 +19,21 @@ from spock import utils, smpmap, bound_buffer
 rmask = select.POLLIN|select.POLLERR|select.POLLHUP
 smask = select.POLLOUT|select.POLLIN|select.POLLERR|select.POLLHUP
 
-webinterface_port = 50072
+webinterface_port = 50092
+
+#Initialize socket for communication with webinterface
+websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+import sys
+OriginalExceptHook = sys.excepthook
+def NewExceptHook(type, value, traceback):
+	if type == KeyboardInterrupt:
+		print("User interrupted with Control-C. Closing sockets ... ")
+		websock.close()
+		exit("\nExiting.")
+	else:
+		OriginalExceptHook(type, value, traceback)
+sys.excepthook = NewExceptHook
 
 
 
@@ -45,9 +59,6 @@ class Client(object):
 		self.poll = select.poll()
 		self.poll.register(self.sock, smask)
 
-		#Initialize socket for communication with webinterface
-		self.websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 		#Initialize Event Loop/Network variables
 		#Plugins should generally not touch these
 		self.encrypted = False
@@ -57,6 +68,8 @@ class Client(object):
 		self.rbuff = bound_buffer.BoundBuffer()
 		self.sbuff = b''
 		self.flags = 0
+
+		self.kill_flag = False
 
 		#Game State variables
 		#Plugins should read these (but generally not write)
@@ -97,8 +110,8 @@ class Client(object):
 		self.exit()
 
 		def customKeyboardInterruptHandler(signum, stackframe):
-			log.msg("CTRL-C from user, exiting....")
-			self.websock.close()
+			print("CTRL-C from user, exiting....")
+			websock.close()
 
 	def event_loop(self):
 
@@ -109,10 +122,10 @@ class Client(object):
 		for callback in self.plugin_handlers[cflags['START_EVENT']]: callback(flag)
 
 		#starting webinterface socket
-		self.websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.websock.bind(("", webinterface_port))
-		self.websock.listen(1)
-		read_list = [self.websock]
+		websock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		websock.bind(("", webinterface_port))
+		websock.listen(1)
+		read_list = [websock]
 
 		while not (self.flags&cflags['KILL_EVENT'] and self.kill):
 			self.getflags()
@@ -136,9 +149,15 @@ class Client(object):
 			for s in readable:
 				if s is s:
 					komm, addr = s.accept()
-					data = komm.recv(1024)
-					psicraft.dispatch_psicraft_command(data, self, komm)
+					data = komm.recv(32)
+					psicraft.dispatch_psicraft_command(data.decode(), self, komm)
 					komm.close()
+
+			if self.kill_flag:
+				print("closing sockets & shutting down")
+				s.close()
+				break
+
 
 	def getflags(self):
 		self.flags = 0

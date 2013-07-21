@@ -6,7 +6,7 @@ import datetime
 
 layers = 16 # 4 layers equal 1kb that are transferred to the webinterface
 bot_ip = 'localhost'
-bot_port = 50072
+bot_port = 50092
 
 
 @route('/query_chunk')
@@ -17,7 +17,7 @@ def query_chunk():
 	data = ""
 
 	while True:
-		data1 = s.recv(16)
+		data1 = s.recv(1)
 		if not data1:
 			s.close()
 			break
@@ -28,6 +28,7 @@ def query_chunk():
 	bot_and_chunk = json.loads(data)
 	bot_block = bot_and_chunk[0]
 	chunk = bot_and_chunk[1]
+	answer = bot_and_chunk[2]
 	bot_height = bot_block[1]
 	web_chunk = [[[[0, 0] for i in range(16)] for j in range(layers)] for k in range(16)]
 
@@ -36,7 +37,7 @@ def query_chunk():
 			for z in range(16):
 				web_chunk[x][y][z] = chunk[x][int(bot_height - ((layers - 1) // 2) + y)][z]
 
-	return json.dumps([web_chunk, bot_block, layers])
+	return json.dumps([web_chunk, bot_block, layers, answer])
 
 @route('/query_bot')
 def query_bot():
@@ -46,7 +47,7 @@ def query_bot():
 	data = ""
 
 	while True:
-		data1 = s.recv(16)
+		data1 = s.recv(1)
 		if not data1:
 			s.close()
 			break
@@ -54,9 +55,11 @@ def query_bot():
 
 	s.close()
 
-	bot_block = json.loads(data)
+	bot_block_and_answer = json.loads(data)
+	bot_block = bot_block_and_answer[0]
+	answer = bot_block_and_answer[1]
 
-	return json.dumps([bot_block, layers])
+	return json.dumps([bot_block, layers, answer])
 
 @route('/connect/<command>')
 def connect_to_bot(command):
@@ -64,7 +67,19 @@ def connect_to_bot(command):
 	s.connect((bot_ip, bot_port))
 	message = command
 	s.send(message.encode())
+
+	answer = ""
+
+	while True:
+		data1 = s.recv(1)
+		if not data1:
+			s.close()
+			break
+		answer += data1.decode()
+
 	s.close()
+
+	return answer
 
 @route('/fewer_layers')
 def fewer_layers():

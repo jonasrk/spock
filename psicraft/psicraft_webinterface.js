@@ -5,8 +5,8 @@ window.onload = function () {
     paper.setup(papercanvas);
 };
 
-function onFrame(event){
-    if(clearCanvas && project.activeLayer.hasChildren()){
+function onFrame(event) {
+    if (clearCanvas && project.activeLayer.hasChildren()) {
         project.activeLayer.removeChildren();
         clearCanvas = false;
     }
@@ -20,7 +20,7 @@ function send_command(path) {
 
         if ((request.readyState === 4) && (request.status === 200)) {
             var modify = document.getElementById('log_area');
-            modify.innerHTML = request.responseText + "<br>" + modify.innerHTML;
+            modify.innerHTML = request.responseText + "\n" + modify.innerHTML;
         }
 
     };
@@ -58,6 +58,9 @@ function query_and_draw_chunk() {
 
     clearCanvas = true;
 
+    var loaded_blocks = new Array();
+    var loaded_blocks_symbols = new Array();
+
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_chunk", true);
     request.onreadystatechange = function () {
@@ -68,7 +71,12 @@ function query_and_draw_chunk() {
             var blocks_json = blocks_and_botblock_and_layers[0];
             var bot_block = blocks_and_botblock_and_layers[1];
             var layers = blocks_and_botblock_and_layers[2];
+            var answer = blocks_and_botblock_and_layers[3];
+            var current_block = 0;
             var canvas_offset = 20 * 16;
+
+            var modify = document.getElementById('log_area');
+            modify.innerHTML = answer + ". Now painting chunk ...\n" + modify.innerHTML;
 
 
             for (var layer = 0; layer < layers; layer++) {
@@ -79,6 +87,8 @@ function query_and_draw_chunk() {
 
                         var block_name = blocks_json[cols][layer][rows];
 
+                        var block_loaded = false;
+
                         var x_coord = 18 * (cols + rows);
                         var y_coord = canvas_offset + 9 * (rows - cols) - (layer * 20);
 
@@ -86,10 +96,33 @@ function query_and_draw_chunk() {
                             if (layer == layers - 1 || rows == 15 || cols == 0) {
 
 
-                                var url = "/static/block_images/" + block_name + ".png";
-                                var raster = new paper.Raster(url);
-                                raster.position = new paper.Point(x_coord, y_coord);
-                                raster.scale(0.27);
+
+                                for (var i = 0; i < loaded_blocks.length; i++) {
+
+
+                                    if (block_name == loaded_blocks[i]) {
+
+                                        block_loaded = true;
+                                        current_block = i;
+                                        break;
+
+                                    }
+
+                                    current_block = i + 1;
+
+                                }
+                                if (block_loaded == false) {
+
+                                    loaded_blocks[current_block] = block_name;
+                                    var url = "/static/block_images/" + block_name + ".png";
+                                    var raster = new paper.Raster(url)
+                                    loaded_blocks_symbols[current_block] = new paper.Symbol(raster);
+
+                                }
+
+                                var instance = new paper.PlacedSymbol(loaded_blocks_symbols[current_block]);
+                                instance.position = new paper.Point(x_coord, y_coord);
+                                instance.scale(0.27);
 
                                 //paper.view.draw();
 
@@ -97,15 +130,38 @@ function query_and_draw_chunk() {
                                 blocks_json[cols][layer + 1][rows] == "0" ||
                                 blocks_json[cols][layer][rows + 1] == "0") {
 
-                                var url = "/static/block_images/" + block_name + ".png";
-                                var raster = new paper.Raster(url);
-                                raster.position = new paper.Point(x_coord, y_coord);
-                                raster.scale(0.27);
+
+
+                                for (var i = 0; i < loaded_blocks.length; i++) {
+
+
+                                    if (block_name == loaded_blocks[i]) {
+
+                                        block_loaded = true;
+                                        current_block = i;
+                                        break;
+
+                                    }
+
+                                    current_block = i + 1;
+
+                                }
+                                if (block_loaded == false) {
+
+                                    loaded_blocks[current_block] = block_name;
+                                    var url = "/static/block_images/" + block_name + ".png";
+                                    var raster = new paper.Raster(url)
+                                    loaded_blocks_symbols[current_block] = new paper.Symbol(raster);
+
+                                }
+
+                                var instance = new paper.PlacedSymbol(loaded_blocks_symbols[current_block]);
+                                instance.position = new paper.Point(x_coord, y_coord);
+                                instance.scale(0.27);
 
                                 //paper.view.draw();
 
                             }
-
 
                         }
 
@@ -116,6 +172,8 @@ function query_and_draw_chunk() {
             }
 
             paper.view.draw();
+
+            modify.innerHTML = " ... finished painting chunk!\n" + modify.innerHTML;
 
         }
 
@@ -135,19 +193,31 @@ function query_and_draw_bot() {
             var bot_block_and_layers = JSON.parse(request.responseText);
             var bot_block = bot_block_and_layers[0];
             var layers = bot_block_and_layers[1];
+            var answer = bot_block_and_layers[2]
             var canvas_offset = 20 * 16;
+
+            var modify = document.getElementById('log_area');
+            modify.innerHTML = answer + ". Now painting Bot ...\n" + modify.innerHTML;
 
             var img = new Image();
 
             var x_coord = 18 * (15 + bot_block[0] % 16 + bot_block[2] % 16);
             var y_coord = canvas_offset + 9 * (-15 + bot_block[2] % 16 - bot_block[0] % 16) - ((((layers - 1) / 2) + 2) * 20);
 
+            console.log("x_coord is " + x_coord + " and y_coord is " + y_coord);
+
             var url = "/static/block_images/bot.png";
             var raster = new paper.Raster(url);
             raster.position = new paper.Point(x_coord, y_coord);
             raster.scale(0.1);
 
+            //var raster2 = new paper.Raster(url);
+            //raster2.position = new paper.Point(50, 50);
+            //raster2.scale(0.6);
+
             paper.view.draw();
+
+            modify.innerHTML = " ... finished painting Bot!\n" + modify.innerHTML;
 
         }
 

@@ -7,6 +7,8 @@ class BoundBuffer:
 		self.buff = (args[0] if args else b'')
 	
 	def recv(self, bytes):
+		if type(bytes) != int:
+			pass #TODO Fix Bug. Therefore set Breakpoint here
 		if len(self.buff) < bytes:
 			raise BufferUnderflowException()
 		o, self.buff = self.buff[:bytes], self.buff[bytes:]

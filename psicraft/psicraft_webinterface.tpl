@@ -20,7 +20,7 @@
         <button onclick="stop_redraw_vis()">stop drawing chunk continuously</button>
         <button onclick="more_layers()">more layers</button>
         <button onclick="fewer_layers()">fewer layers</button>
-        <button onclick="send_command(&quot;http://localhost:8080/connect/x+&quot;)">connect to bot</button>
+        <button onclick="send_command(&quot;http://localhost:8080/connect/kill&quot;)">kill bot</button>
         
         <div id="layer_div">16 layers</div>
         
