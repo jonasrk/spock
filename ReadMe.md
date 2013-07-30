@@ -14,7 +14,4 @@ Usage
 
 6. To properly shut down the bot, press "kill bot"-button on the webinterface.
 
-
-"unorderable types: int() < str()" bug appears randomly. To fix it set breakpoint in bound_buffer.py in line 11.
-
 If bot was not killed via the "kill"-button of the webinterface, the port will usually not close. To workaround the "address in use" bug, change the global port variables in psicraft.py and client.py .
