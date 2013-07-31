@@ -2,13 +2,9 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="/static/psicraft_webinterface.css">
-       
-        <!-- Load the Paper.js library -->
         <script type="text/javascript" src="/static/paper.js"></script>
         <script type="text/javascript" src="/static/psicraft_webinterface.js" canvas="ChunkCanvas"></script>
-        
     <body>
-        
         <button onclick="send_command(&quot;http://localhost:8080/connect/x+&quot;)">x+</button>
         <button onclick="send_command(&quot;http://localhost:8080/connect/x-&quot;)">x-</button>
         <button onclick="send_command(&quot;http://localhost:8080/connect/z+&quot;)">z+</button>
@@ -26,11 +22,6 @@
         
         <p><textarea id="log_area" cols="70"></textarea></p>
         
-        <div class="wrapper">
-            <canvas id="ChunkCanvas" width="1000" height="600"></canvas>
-            <canvas id="BotCanvas" width="1000" height="600"></canvas>
-            <canvas id="myCanvas" width="1000" height="600"></canvas>
-        </div>
-        
+        <canvas id="mainCanvas" width="1000" height="600"></canvas>
     </body>
 </html>

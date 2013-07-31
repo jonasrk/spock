@@ -1,19 +1,15 @@
-var clearCanvas = false;
-
 var loaded_blocks = new Array();
 var loaded_blocks_symbols = new Array();
 
 window.onload = function () {
-    papercanvas = document.getElementById('myCanvas'); // for paper.js
+    papercanvas = document.getElementById('mainCanvas'); // for paper.js
     paper.setup(papercanvas);
 };
 
 function send_command(path) {
-
     var request = new XMLHttpRequest();
     request.open("GET", path, true);
     request.onreadystatechange = function () {
-
         if ((request.readyState === 4) && (request.status === 200)) {
             var modify = document.getElementById('log_area');
             modify.innerHTML = request.responseText + "\n" + modify.innerHTML;
@@ -117,7 +113,7 @@ function query_and_draw_chunk() {
                                 //paper.view.draw();
 
                             } else if (blocks_json[cols - 1][layer][rows] == "0" ||
-                                blocks_json[cols][layer][rows] == "0" ||
+                                blocks_json[cols][layer + 1][rows] == "0" ||
                                 blocks_json[cols][layer][rows + 1] == "0") {
 
 
