@@ -22,6 +22,9 @@
         
         <p><textarea id="log_area" cols="70"></textarea></p>
         
-        <canvas id="mainCanvas" width="1000" height="600"></canvas>
+        <div class="wrapper">
+            <canvas id="ChunkCanvas" width="1000" height="600"></canvas>
+            <canvas id="BotCanvas" width="1000" height="600"></canvas>
+        </div>
     </body>
 </html>
