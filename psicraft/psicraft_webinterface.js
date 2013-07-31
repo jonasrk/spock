@@ -26,24 +26,21 @@ function send_command(path) {
 
 function redraw_vis() {
 
-    redraw_chunk_interval = setInterval(function () {
-        query_and_draw_chunk()
-    }, 1000);
-
-    redraw_bot_interval = setInterval(function () {
-        query_and_draw_bot()
+    redraw_interval = setInterval(function () {
+        query_and_draw()
     }, 1000);
 
 }
 
 function stop_redraw_vis() {
 
-    redraw_interval = window.clearInterval(redraw_bot_interval);
-    redraw_interval = window.clearInterval(redraw_chunk_interval);
+    redraw_interval = window.clearInterval(redraw_interval);
 
 }
 
 function query_and_draw() {
+
+    paper.project.activeLayer.removeChildren();
 
     query_and_draw_chunk();
     query_and_draw_bot();
@@ -51,8 +48,6 @@ function query_and_draw() {
 }
 
 function query_and_draw_chunk() {
-
-    papercanvas.getContext('2d').clearRect(0,0,1000,600);
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_chunk", true);
@@ -177,8 +172,6 @@ function query_and_draw_chunk() {
 }
 
 function query_and_draw_bot() {
-
-    papercanvas.getContext('2d').clearRect(0,0,1000,600);
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_bot", true);
