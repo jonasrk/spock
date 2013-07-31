@@ -18,11 +18,11 @@
         <button onclick="query_and_draw()">draw chunk</button>
         <button onclick="redraw_vis()">draw chunk continuously</button>
         <button onclick="stop_redraw_vis()">stop drawing chunk continuously</button>
-        <button onclick="more_layers()">more layers</button>
-        <button onclick="fewer_layers()">fewer layers</button>
+        <button onclick="more_layers(&quot;http://localhost:8080/connect/more_layers&quot;)">more layers</button>
+        <button onclick="fewer_layers(&quot;http://localhost:8080/connect/fewer_layers&quot;)">fewer layers</button>
         <button onclick="send_command(&quot;http://localhost:8080/connect/kill&quot;)">kill bot</button>
         
-        <div id="layer_div">2 layers</div>
+        <div id="layer_div">x layers</div>
         
         <p><textarea id="log_area" cols="70"></textarea></p>
         

@@ -4,16 +4,9 @@ var loaded_blocks = new Array();
 var loaded_blocks_symbols = new Array();
 
 window.onload = function () {
-    var papercanvas = document.getElementById('myCanvas'); // for paper.js
+    papercanvas = document.getElementById('myCanvas'); // for paper.js
     paper.setup(papercanvas);
 };
-
-function onFrame(event) {
-    if (clearCanvas && project.activeLayer.hasChildren()) {
-        project.activeLayer.removeChildren();
-        clearCanvas = false;
-    }
-}
 
 function send_command(path) {
 
@@ -59,7 +52,7 @@ function query_and_draw() {
 
 function query_and_draw_chunk() {
 
-    clearCanvas = true;
+    papercanvas.getContext('2d').clearRect(0,0,1000,600);
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_chunk", true);
@@ -84,7 +77,6 @@ function query_and_draw_chunk() {
                 for (var rows = 0; rows < 16; rows++) {
 
                     for (var cols = 15; cols >= 0; cols--) {
-
 
                         var block_name = blocks_json[cols][layer][rows];
 
@@ -130,7 +122,7 @@ function query_and_draw_chunk() {
                                 //paper.view.draw();
 
                             } else if (blocks_json[cols - 1][layer][rows] == "0" ||
-                                blocks_json[cols][layer + 1][rows] == "0" ||
+                                blocks_json[cols][layer][rows] == "0" ||
                                 blocks_json[cols][layer][rows + 1] == "0") {
 
 
@@ -186,6 +178,7 @@ function query_and_draw_chunk() {
 
 function query_and_draw_bot() {
 
+    papercanvas.getContext('2d').clearRect(0,0,1000,600);
 
     var request = new XMLHttpRequest();
     request.open("GET", "http://localhost:8080/query_bot", true);
@@ -207,8 +200,6 @@ function query_and_draw_bot() {
             var x_coord = 18 * (15 + bot_block[0] % 16 + bot_block[2] % 16);
             var y_coord = canvas_offset + 9 * (-15 + bot_block[2] % 16 - bot_block[0] % 16) - ((((layers - 1) / 2) + 2) * 20);
 
-            console.log("x_coord is " + x_coord + " and y_coord is " + y_coord);
-
             var url = "/static/block_images/bot.png";
             var raster = new paper.Raster(url);
             raster.position = new paper.Point(x_coord, y_coord);
@@ -228,40 +219,46 @@ function query_and_draw_bot() {
     request.send();
 }
 
-function more_layers() {
+function more_layers(path) {
 
-    send_command("http://localhost:8080/connect/more_layers");
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/more_layers", true);
+    request.open("GET", path, true);
     request.onreadystatechange = function () {
 
         if ((request.readyState === 4) && (request.status === 200)) {
-
-            var layers = JSON.parse(request.responseText);
+            var modify = document.getElementById('log_area');
+            var layers_and_answer = JSON.parse(request.responseText);
+            var layers = layers_and_answer[0]
+            var answer = layers_and_answer[1]
+            modify.innerHTML = answer + "\n" + modify.innerHTML;
             var modify = document.getElementById('layer_div');
             modify.innerHTML = layers + " layers";
-
         }
 
     };
+
     request.send();
 }
 
-function fewer_layers() {
+function fewer_layers(path) {
 
-    send_command("http://localhost:8080/connect/fewer_layers");
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/fewer_layers", true);
+    request.open("GET", path, true);
     request.onreadystatechange = function () {
 
         if ((request.readyState === 4) && (request.status === 200)) {
-
-            var layers = JSON.parse(request.responseText);
+            console.log("javascript fewer layers - in ready");
+            var modify = document.getElementById('log_area');
+            var layers_and_answer = JSON.parse(request.responseText);
+            console.log("parsed layers: " + layers);
+            var layers = layers_and_answer[0]
+            var answer = layers_and_answer[1]
+            modify.innerHTML = answer + "\n" + modify.innerHTML;
             var modify = document.getElementById('layer_div');
             modify.innerHTML = layers + " layers";
-
         }
 
     };
+
     request.send();
 }

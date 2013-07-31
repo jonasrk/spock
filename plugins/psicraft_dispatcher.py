@@ -19,11 +19,11 @@ def dispatch_psicraft_command(antwort, client, komm):
 	elif antwort == "more_layers":
 		global layers
 		layers = layers + 1
-		komm.send(json.dumps("Bot now sends %s layers to webinterface" % layers).encode())
+		komm.send(json.dumps([layers, "Bot now sends %s layers to webinterface" % layers]).encode())
 	elif antwort == "fewer_layers":
 		global layers
 		layers = layers - 1
-		komm.send(json.dumps("Bot now sends %s layers to webinterface" % layers).encode())
+		komm.send(json.dumps([layers, "Bot now sends %s layers to webinterface" % layers]).encode())
 	elif antwort == "kill":
 		psicraft_kill(client)
 
@@ -91,14 +91,14 @@ def psicraft_query_chunk(client, komm):
 				if client.world.columns[(x_chunk, z_chunk)].chunks[int((bot_block[1]+y)//16)] != None:
 					block_types_json[x][y][z] = client.world.columns[(x_chunk, z_chunk)].chunks[int((bot_block[1]+y-layers//2)//16)]['block_data'].get(x,int((bot_block[1]+y-layers//2)%16),z)
 
-	komm.send(json.dumps([bot_block, block_types_json, "Received chunk from Bot"]).encode())
+	komm.send(json.dumps([bot_block, block_types_json, "Received chunk from Bot", layers]).encode())
 
 def psicraft_query_bot(client, komm):
 	print("trying to send bot_block do webinterface")
 
 	bot_block = [client.position['x'], client.position['y'], client.position['z']]
 
-	komm.send(json.dumps([bot_block, "Received bot position from Bot"]).encode())
+	komm.send(json.dumps([bot_block, "Received bot position from Bot", layers]).encode())
 
 def psicraft_kill(client):
 	client.kill_flag = True

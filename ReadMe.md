@@ -10,7 +10,7 @@ Usage
 
 4. In your browser go to localhost:8080/bot .
 
-5. Play araund with x+, x-, z+, z-, draw chunk, draw chunk continously and stop drawing chunk continously .
+5. Play around with x+, x-, z+, z-, draw chunk, draw chunk continously and stop drawing chunk continously .
 
 6. To properly shut down the bot, press "kill bot"-button on the webinterface.
 

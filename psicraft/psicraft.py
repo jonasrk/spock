@@ -4,7 +4,7 @@ import json
 import time
 import datetime
 
-layers = 2 # 4 layers equal 1kb that are transferred to the webinterface
+#layers = 2 # 4 layers equal 1kb that are transferred to the webinterface
 bot_ip = 'localhost'
 bot_port = 50104
 
@@ -29,6 +29,7 @@ def query_chunk():
 	bot_block = bot_and_chunk[0]
 	chunk = bot_and_chunk[1]
 	answer = bot_and_chunk[2]
+	layers = bot_and_chunk[3]
 	bot_height = bot_block[1]
 
 	return json.dumps([chunk, bot_block, layers, answer])
@@ -52,11 +53,13 @@ def query_bot():
 	bot_block_and_answer = json.loads(data)
 	bot_block = bot_block_and_answer[0]
 	answer = bot_block_and_answer[1]
+	layers = bot_block_and_answer[2]
 
 	return json.dumps([bot_block, layers, answer])
 
 @route('/connect/<command>')
 def connect_to_bot(command):
+	print("connect_to_bot")
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((bot_ip, bot_port))
 	message = command
@@ -74,18 +77,6 @@ def connect_to_bot(command):
 	s.close()
 
 	return answer
-
-@route('/fewer_layers')
-def fewer_layers():
-	global layers
-	layers = layers - 1
-	return str(layers)
-
-@route('/more_layers')
-def more_layers():
-	global layers
-	layers = layers + 1
-	return str(layers)
 
 @route('/static/<filename:path>')
 def server_static(filename):
