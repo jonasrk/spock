@@ -59,7 +59,6 @@ def query_bot():
 
 @route('/connect/<command>')
 def connect_to_bot(command):
-	print("connect_to_bot")
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((bot_ip, bot_port))
 	message = command

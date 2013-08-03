@@ -15,3 +15,5 @@ Usage
 6. To properly shut down the bot, press "kill bot"-button on the webinterface.
 
 If bot was not killed via the "kill"-button of the webinterface, the port will usually not close. To workaround the "address in use" bug, change the global port variables in psicraft.py and client.py .
+
+NOTE: If you run psicraft.py from the commandline you need to actually start it from INSIDE the psicraft folder. Otherwise bottle won't find the .tpl file.
